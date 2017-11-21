@@ -30,7 +30,7 @@ bash src/install.sh
 
 ## Datasets
 
-The code takes an input dataset in csv file. Every row indicates one datapoint with comma-separated features. A sample train, validation, and test file for the nltcs dataset is included in the  `data/` directory.
+The code takes an input dataset in csv file. Every row indicates one datapoint with comma-separated features. A sample train, validation, and test file for the `nltcs` dataset is included in the  `data/` directory.
 
 
 ### Learning and inference options
@@ -57,21 +57,21 @@ Learning and inference of boosted generative models is handled by the `main.py` 
 
 ### Examples
 
-The following commands learns boosted models and evaluates it for both density estimation and classification.
+The following commands learns boosted models and evaluates it for density estimation and classification.
 
-Meta-algorithm: Multiplicative generative boosting
+Meta-algorithm: multiplicative generative boosting
 
 ```
 python src/main.py --dataset nltcs --run-genbgm --genbgm-alpha 0.5 0.5 --genbgm-beta 0.25 0.125 --run-classifier
 ```
 
-Meta-algorithm: Multiplicative discriminative boosting
+Meta-algorithm: multiplicative discriminative boosting
 
 ```
 python src/main.py --dataset nltcs --run-discbgm --discbgm-alpha 1. 1. --run-classifier
 ```
 
-Meta-algorithm: Additive boosting
+Meta-algorithm: additive boosting
 
 ```
 python src/main.py --dataset nltcs --run-addbgm --addbgm-alpha 0.5 0.25 --run-classifier
