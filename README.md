@@ -6,7 +6,7 @@ This repository provides a reference implementation for boosted generative model
 
 > Boosted Generative Models.  
 Aditya Grover and Stefano Ermon.   
-AAAI Conference on Artificial Intelligence (AAAI), 2018.
+AAAI Conference on Artificial Intelligence (AAAI), 2018.  
 https://arxiv.org/pdf/1702.08484.pdf
 
 If you find boosted generative models useful in your research, please consider citing the following paper:
