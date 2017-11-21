@@ -1,40 +1,16 @@
 import os
 import numpy as np
 import csv
+import bmm_utils as model_utils
+from scipy.misc import logsumexp
+import tensorflow as tf
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # suppress tf verbose logs
 try:
 	from time import perf_counter
 except:
 	from time import time
 	perf_counter = time
-import bmm_utils as model_utils
-from scipy.misc import logsumexp
-import tensorflow as tf
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
-def modify_ext(path='./data/'):
-	for file in os.listdir(path):
-		print(file)
-		if '.ts.' in file:
-			new_file = file.replace('.ts.', '.train.')
-			print(new_file)
-			os.rename(os.path.join(path, file), os.path.join(path, new_file))
-
-# Utils for loading data
-
-def csv_2_numpy(filename, 
-				path, 
-				sep=',', 
-				type='int32'):
-	"""
-	Utility to read a dataset in csv format into a numpy array
-	"""
-
-	file_path = os.path.join(path, filename)
-	reader = csv.reader(open(file_path, "r"), delimiter=sep)
-	x = list(reader)
-	array = np.array(x).astype(type)
-	return array
 
 def load_data(dataset_name, 
 			   path,
@@ -44,8 +20,23 @@ def load_data(dataset_name,
 			   splits=['train', 'valid', 'test'],
 			   verbose=True):
 	"""
-	Loading splits by suffix from csv files
+	Loading splits by suffix from csv files.
 	"""
+
+	def csv_2_numpy(filename, 
+				path, 
+				sep=',', 
+				type='int32'):
+		"""
+		Utility to read a dataset in csv format into a numpy array.
+		"""
+
+		file_path = os.path.join(path, filename)
+		reader = csv.reader(open(file_path, "r"), delimiter=sep)
+		x = list(reader)
+		array = np.array(x).astype(type)
+		
+		return array
 
 	csv_files = ['{0}.{1}.{2}'.format(dataset_name, ext, suffix) for ext in splits]
 
@@ -58,13 +49,17 @@ def load_data(dataset_name,
 																 load_end_t - load_start_t))
 		for data, split in zip(dataset_splits, splits):
 			print('\t{0}:\t{1}'.format(split, data.shape))
-
+	print()
 	return dataset_splits
 
-# Utils for boosting
 def get_add_reweighted_training_set(ensemble, 
 									alphas, 
 									train_samples):
+
+	"""
+	Reweights the training points inversely proportional 
+	to the current additive model density.
+	"""
 
 	log_likelihood = get_add_boosted_log_likelihood(ensemble, alphas, train_samples)
 	log_uweights = -1*log_likelihood
@@ -79,6 +74,9 @@ def get_add_reweighted_training_set(ensemble,
 def get_add_boosted_log_likelihood(ensemble, 
 									alphas, 
 									samples):
+	"""
+	Evaluates the additive model density.
+	"""
 
 	num_examples = samples.shape[0]
 	log_likelihood = np.zeros((num_examples))
@@ -94,6 +92,10 @@ def get_multiply_boosted_unnormalized_log_likelihood(ensemble,
 													alphas, 
 													samples, 
 													genbgm=True):
+
+	"""
+	Evaluates the (unnormalized) multiplicative boosted model density.
+	"""
 
 	if genbgm:
 		num_examples = samples.shape[0]
@@ -115,10 +117,14 @@ def get_log_partition_estimate(ensemble,
 								genbgm=True, 
 								num_samples=1000000):
 
-	import bmm_utils
-	proposal_samples = bmm_utils.sample(proposal, num_samples)
+	"""
+	Estimates the log partition for the boosted model density using
+	importance sampling with base generative model as the proposal.
+	"""
+
+	proposal_samples = model_utils.sample(proposal, num_samples)
 	ull = get_multiply_boosted_unnormalized_log_likelihood(ensemble, alphas, proposal_samples, genbgm)
-	log_importance_weights = bmm_utils.evaluate(proposal, proposal_samples)
+	log_importance_weights = model_utils.evaluate(proposal, proposal_samples)
 	logZ = logsumexp(ull-log_importance_weights) - np.log(num_samples)
 
 	return logZ
@@ -127,6 +133,10 @@ def get_genbgm_reweighted_training_set(ensemble,
 										alphas, 
 										train_samples, 
 										betas):
+	"""
+	Reweights the training points inversely proportional 
+	to the current multiplicative generative model density.
+	"""
 
 	num_examples = train_samples.shape[0]
 	ull = get_multiply_boosted_unnormalized_log_likelihood(ensemble, alphas, train_samples, True)
@@ -142,6 +152,11 @@ def get_discbgm_reweighted_training_set(ensemble,
 										alphas, 
 										train_samples):
 
+	"""
+	Reweights the training points inversely proportional 
+	to the current multiplicative discriminative model density.
+	"""
+
 	num_examples = train_samples.shape[0]
 	ull = get_multiply_boosted_unnormalized_log_likelihood(ensemble, alphas, train_samples, False)
 	neg_ull = -1 * ull
@@ -152,19 +167,23 @@ def get_discbgm_reweighted_training_set(ensemble,
 
 	return reweighted_samples
 
-def get_next_state(current_states):
 
-	proposal_states = current_states.copy()
-	sample_idx = np.random.randint(current_states.shape[1], size=(proposal_states.shape[0],))
-	proposal_states[np.arange(proposal_states.shape[0]), sample_idx] = 1-current_states[np.arange(proposal_states.shape[0]), sample_idx]
-
-	return proposal_states
 
 def get_model_samples(ensemble, 
 					 alphas, 
 					 init_states):
+	"""
+	MCMC sampling for discrete state spaces.
+	Used for multiplicative discriminative boosting.
+	"""
 
-	# MCMC sampling for discrete state spaces
+	def get_next_state(current_states):
+
+		proposal_states = current_states.copy()
+		sample_idx = np.random.randint(current_states.shape[1], size=(proposal_states.shape[0],))
+		proposal_states[np.arange(proposal_states.shape[0]), sample_idx] = 1-current_states[np.arange(proposal_states.shape[0]), sample_idx]
+
+		return proposal_states
 
 	burn_in = 10000
 	current_states = init_states
@@ -200,6 +219,11 @@ class DiscriminativeModel(object):
 				disc_id, 
 				n_input):
 
+		"""
+		Initializes a discriminator class for specifying a multilayer perceptron.
+		Used for estimating density ratios in discriminative boosting.
+		"""
+
 		tf.set_random_seed(seed)
 		self.sess = sess
 
@@ -225,12 +249,17 @@ class DiscriminativeModel(object):
 			global_step=self.global_step)
 		self.saver = tf.train.Saver(max_to_keep=None)
 		self.init_op = tf.global_variables_initializer()
-	   
 
+		return
+	   
 	def run_network(self, 
 					x, 
 					is_training=False, 
 					reuse=None):
+
+		"""
+		Creates the tensorflow graph for the multilayer perceptron.
+		"""
 
 		activations = x
 		with tf.variable_scope(self.disc_id):
@@ -247,6 +276,9 @@ class DiscriminativeModel(object):
 	def create_loss(self, 
 					logits, 
 					y):
+		"""
+		Creates the loss function for binary classsification.
+		"""
 
 		y = self.y
 		loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=logits, labels=y))
@@ -256,6 +288,9 @@ class DiscriminativeModel(object):
 
 	def predict_log_odds(self, 
 						X):
+		"""
+		Extracts the log-odds ratio for discriminative boosting.
+		"""
 
 		log_odds = self.sess.run(self.ll, feed_dict={self.x: X})
 
@@ -268,6 +303,9 @@ class DiscriminativeModel(object):
 			valY=None, 
 			num_epochs=100,
 			savedir=None):
+		"""
+		Trains the MLP for a specified number of epochs.
+		"""
 
 		sess = self.sess
 		sess.run(self.init_op)
@@ -291,8 +329,8 @@ class DiscriminativeModel(object):
 				global_steps.append(gs)
 				save_paths.append(save_path)
 			validation_loss = sess.run(self.loss, feed_dict={self.x: valX, self.y: valY, self.is_training: False})
-			if i%20 == 0:
-				print('Epoch:', i, 'train loss:', train_loss, 'validation loss:', validation_loss)
+			if (i+1)%20 == 0:
+				print('Epoch:', i+1, 'train loss:', train_loss, 'validation loss:', validation_loss)
 
 			validation_losses.append(validation_loss)
 		min_idx = validation_losses.index(min(validation_losses))

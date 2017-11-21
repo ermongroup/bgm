@@ -11,6 +11,9 @@ def predict(test,
 			alphas, 
 			log_likelihood_evaluator, 
 			genbgm=None):
+	"""
+	Generative classification for predicting one variable given the rest.
+	"""
 
 	print('Running generative classifier...')
 	num_samples = test.shape[0]
@@ -49,7 +52,8 @@ def predict(test,
 		avg_accuracy += accuracy
 	avg_xent /= num_dim
 	avg_accuracy /= num_dim
-	print('Average xent loss: %.2f accuracy: %.2f' % (avg_xent, avg_accuracy))
+	print('Average xent loss: %.2f, accuracy: %.2f' % (avg_xent, avg_accuracy))
+
 	return avg_accuracy
 
 
@@ -57,6 +61,9 @@ def predict(test,
 def eval_base(train, 
 			test, 
 			run_classifier=False):
+	"""
+	Trains and evaluates the base generative model.
+	"""
 
 	print('Running base generative model...')
 	model = initialize()
@@ -66,15 +73,18 @@ def eval_base(train,
 
 	if run_classifier:
 		pred_accuracy = predict(test, [model], [1.], get_add_boosted_log_likelihood)
-
 	print()
+
 	return ll_test, model
 
-def eval_add(train, 
+def eval_addbgm(train, 
 			test, 
 			alphas, 
 			run_classifier, 
 			baseline_model=None):
+	"""
+	Trains and evaluates the additive boosting model ensemble.
+	"""
 
 	print('Running additive boosting...')
 	ensemble = []
@@ -96,6 +106,7 @@ def eval_add(train,
 	if run_classifier:
 		predict(test, ensemble, alphas, get_add_boosted_log_likelihood)
 	print()
+
 	return ll_test
 
 def eval_discbgm(train,
@@ -106,6 +117,9 @@ def eval_discbgm(train,
 				baseline_model=None,
 				seed=0, 
 				num_epochs=100):
+	"""
+	Trains and evaluates the multiplicative discriminative boosting model ensemble.
+	"""
 
 	print('Running discriminative multiplicative boosting...')
 	tf.reset_default_graph()
@@ -145,7 +159,7 @@ def eval_discbgm(train,
 	ull_test = np.mean(get_multiply_boosted_unnormalized_log_likelihood(ensemble, alphas, test, False))
 	logZ_estimate = get_log_partition_estimate(ensemble, alphas, proposal, False)
 	ll_test = ull_test-logZ_estimate
-	print('Log-likelihood with discriminative boosting after %d rounds: %.2f with logZ estimate: %.2f' % (len(alphas), ll_test, logZ_estimate))
+	print('Log-likelihood with discriminative boosting after %d rounds: %.2f' % (len(alphas), ll_test))
 
 	if run_classifier:
 		predict(test, ensemble, alphas, get_multiply_boosted_unnormalized_log_likelihood, genbgm=False)
@@ -159,6 +173,9 @@ def eval_genbgm(train,
 				betas,
 				run_classifier, 
 				baseline_model):
+	"""
+	Trains and evaluates the multiplicative generative boosting model ensemble.
+	"""
 
 	print('Running generative multiplicative boosting...')
 	ensemble = []
@@ -180,9 +197,10 @@ def eval_genbgm(train,
 	ull_test = np.mean(get_multiply_boosted_unnormalized_log_likelihood(ensemble, alphas, test, True))
 	logZ_estimate = get_log_partition_estimate(ensemble, alphas, proposal, True)
 	ll_test = ull_test-logZ_estimate
-	print('Log-likelihood with generative boosting after %d rounds: %.2f with logZ estimate: %.2f' % (len(alphas), ll_test, logZ_estimate))
+	print('Log-likelihood with generative boosting after %d rounds: %.2f' % (len(alphas), ll_test))
 	
 	if run_classifier:
 		predict(test, ensemble, alphas, get_multiply_boosted_unnormalized_log_likelihood, genbgm=True)
 	print()
+
 	return ll_test

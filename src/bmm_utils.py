@@ -3,20 +3,26 @@ from skbayes.mixture_models import VBBMM
 from scipy.misc import logsumexp
 
 def initialize(num_components=3):
+	"""
+	Initializes a bernoulli mixture model.
+	"""
+
 	model = VBBMM(n_components=num_components)
 
 	return model
 
 def train(model, 
 		samples):
+	"""
+	Trains a bernoulli mixture model.
+	"""
 
 	return model.fit(samples)
 
 def evaluate(model, 
 			samples):
 	"""
-	Returns the log-likelihood of data (arg: samples) 
-	based on a bernoulli mixture model (arg: model)
+	Returns the log-likelihood assigned by a bernoulli mixture model.
 	"""
 
 	weights = model.weights_ # (n_components,)
@@ -30,6 +36,9 @@ def evaluate(model,
 
 def sample(model, 
 			num_samples):
+	"""
+	Samples from a bernoulli mixture model.
+	"""
 
 	weights = model.weights_ # (n_components,)
 	means = model.means_ # (n_features, n_components)
@@ -42,5 +51,5 @@ def sample(model,
 		samples.append(sample)
 
 	samples = np.vstack(samples)
-	
+
 	return samples
