@@ -12,7 +12,7 @@ def initialize(num_components=3):
 	return model
 
 def train(model, 
-		samples):
+	samples):
 	"""
 	Trains a bernoulli mixture model.
 	"""
@@ -20,7 +20,7 @@ def train(model,
 	return model.fit(samples)
 
 def evaluate(model, 
-			samples):
+	samples):
 	"""
 	Returns the log-likelihood assigned by a bernoulli mixture model.
 	"""
@@ -35,7 +35,7 @@ def evaluate(model,
 	return log_prob
 
 def sample(model, 
-			num_samples):
+	num_samples):
 	"""
 	Samples from a bernoulli mixture model.
 	"""

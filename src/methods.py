@@ -59,8 +59,8 @@ def predict(test,
 
 
 def eval_base(train, 
-			test, 
-			run_classifier=False):
+	test, 
+	run_classifier=False):
 	"""
 	Trains and evaluates the base generative model.
 	"""
@@ -78,10 +78,10 @@ def eval_base(train,
 	return ll_test, model
 
 def eval_addbgm(train, 
-			test, 
-			alphas, 
-			run_classifier, 
-			baseline_model=None):
+	test, 
+	alphas, 
+	run_classifier, 
+	baseline_model=None):
 	"""
 	Trains and evaluates the additive boosting model ensemble.
 	"""
@@ -110,13 +110,13 @@ def eval_addbgm(train,
 	return ll_test
 
 def eval_discbgm(train,
-				test,
-				alphas, 
-				run_classifier, 
-				resultdir, 
-				baseline_model=None,
-				seed=0, 
-				num_epochs=100):
+	test,
+	alphas, 
+	run_classifier, 
+	resultdir, 
+	baseline_model=None,
+	seed=0, 
+	num_epochs=100):
 	"""
 	Trains and evaluates the multiplicative discriminative boosting model ensemble.
 	"""
@@ -168,11 +168,11 @@ def eval_discbgm(train,
 	return ll_test
 
 def eval_genbgm(train, 
-				test,
-				alphas,
-				betas,
-				run_classifier, 
-				baseline_model):
+	test,
+	alphas,
+	betas,
+	run_classifier, 
+	baseline_model):
 	"""
 	Trains and evaluates the multiplicative generative boosting model ensemble.
 	"""

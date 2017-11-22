@@ -13,20 +13,20 @@ except:
 	perf_counter = time
 
 def load_data(dataset_name, 
-			   path,
-			   sep=',',
-			   type='int32',
-			   suffix='data',
-			   splits=['train', 'valid', 'test'],
-			   verbose=True):
+	path,
+	sep=',',
+	type='int32',
+	suffix='data',
+	splits=['train', 'valid', 'test'],
+	verbose=True):
 	"""
 	Loading splits by suffix from csv files.
 	"""
 
 	def csv_2_numpy(filename, 
-				path, 
-				sep=',', 
-				type='int32'):
+		path, 
+		sep=',', 
+		type='int32'):
 		"""
 		Utility to read a dataset in csv format into a numpy array.
 		"""
@@ -53,9 +53,8 @@ def load_data(dataset_name,
 	return dataset_splits
 
 def get_add_reweighted_training_set(ensemble, 
-									alphas, 
-									train_samples):
-
+	alphas, 
+	train_samples):
 	"""
 	Reweights the training points inversely proportional 
 	to the current additive model density.
@@ -72,8 +71,8 @@ def get_add_reweighted_training_set(ensemble,
 
 
 def get_add_boosted_log_likelihood(ensemble, 
-									alphas, 
-									samples):
+	alphas, 
+	samples):
 	"""
 	Evaluates the additive model density.
 	"""
@@ -89,10 +88,9 @@ def get_add_boosted_log_likelihood(ensemble,
 	return log_likelihood
 
 def get_multiply_boosted_unnormalized_log_likelihood(ensemble, 
-													alphas, 
-													samples, 
-													genbgm=True):
-
+	alphas, 
+	samples, 
+	genbgm=True):
 	"""
 	Evaluates the (unnormalized) multiplicative boosted model density.
 	"""
@@ -112,11 +110,10 @@ def get_multiply_boosted_unnormalized_log_likelihood(ensemble,
 
 
 def get_log_partition_estimate(ensemble, 
-								alphas, 
-								proposal, 
-								genbgm=True, 
-								num_samples=1000000):
-
+	alphas, 
+	proposal, 
+	genbgm=True, 
+	num_samples=1000000):
 	"""
 	Estimates the log partition for the boosted model density using
 	importance sampling with base generative model as the proposal.
@@ -130,9 +127,9 @@ def get_log_partition_estimate(ensemble,
 	return logZ
 
 def get_genbgm_reweighted_training_set(ensemble, 
-										alphas, 
-										train_samples, 
-										betas):
+	alphas, 
+	train_samples, 
+	betas):
 	"""
 	Reweights the training points inversely proportional 
 	to the current multiplicative generative model density.
@@ -149,9 +146,8 @@ def get_genbgm_reweighted_training_set(ensemble,
 	return reweighted_samples
 
 def get_discbgm_reweighted_training_set(ensemble, 
-										alphas, 
-										train_samples):
-
+	alphas, 
+	train_samples):
 	"""
 	Reweights the training points inversely proportional 
 	to the current multiplicative discriminative model density.
@@ -170,8 +166,8 @@ def get_discbgm_reweighted_training_set(ensemble,
 
 
 def get_model_samples(ensemble, 
-					 alphas, 
-					 init_states):
+    alphas, 
+    init_states):
 	"""
 	MCMC sampling for discrete state spaces.
 	Used for multiplicative discriminative boosting.
@@ -214,11 +210,10 @@ def get_model_samples(ensemble,
 class DiscriminativeModel(object):
 
 	def __init__(self, 
-				sess, 
-				seed, 
-				disc_id, 
-				n_input):
-
+		sess, 
+		seed, 
+		disc_id, 
+		n_input):
 		"""
 		Initializes a discriminator class for specifying a multilayer perceptron.
 		Used for estimating density ratios in discriminative boosting.
@@ -253,10 +248,9 @@ class DiscriminativeModel(object):
 		return
 	   
 	def run_network(self, 
-					x, 
-					is_training=False, 
-					reuse=None):
-
+		x, 
+		is_training=False, 
+		reuse=None):
 		"""
 		Creates the tensorflow graph for the multilayer perceptron.
 		"""
@@ -274,8 +268,8 @@ class DiscriminativeModel(object):
 		return output_logits
 
 	def create_loss(self, 
-					logits, 
-					y):
+		logits, 
+		y):
 		"""
 		Creates the loss function for binary classsification.
 		"""
@@ -287,7 +281,7 @@ class DiscriminativeModel(object):
 		return loss
 
 	def predict_log_odds(self, 
-						X):
+		X):
 		"""
 		Extracts the log-odds ratio for discriminative boosting.
 		"""
@@ -297,12 +291,12 @@ class DiscriminativeModel(object):
 		return np.squeeze(log_odds)
 
 	def train(self, 
-			trX, 
-			trY, 
-			valX=None, 
-			valY=None, 
-			num_epochs=100,
-			savedir=None):
+		trX, 
+		trY, 
+		valX=None, 
+		valY=None, 
+		num_epochs=100,
+		savedir=None):
 		"""
 		Trains the MLP for a specified number of epochs.
 		"""

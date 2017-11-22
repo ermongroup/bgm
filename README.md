@@ -25,7 +25,7 @@ The codebase is implemented in Python 3.6. To install the necessary requirements
 
 ```
 pip install -r requirements.txt
-bash src/install.sh
+bash install.sh
 ```
 
 ### Datasets
@@ -33,7 +33,7 @@ bash src/install.sh
 The code takes an input dataset in csv file. Every row indicates one datapoint with comma-separated features. A sample train, validation, and test file for the `nltcs` dataset is included in the  `data/` directory.
 
 
-### Learning and inference options
+### Options
 
 Learning and inference of boosted generative models is handled by the `main.py` script which provides the following command line arguments.
 
@@ -57,7 +57,7 @@ Learning and inference of boosted generative models is handled by the `main.py` 
 
 ### Examples
 
-The following commands learns boosted models and evaluates it for density estimation and classification.
+The following commands learns boosted ensembles with two models and evaluates the ensemble for density estimation and classification.
 
 Meta-algorithm: multiplicative generative boosting
 
