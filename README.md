@@ -28,7 +28,7 @@ pip install -r requirements.txt
 bash src/install.sh
 ```
 
-## Datasets
+### Datasets
 
 The code takes an input dataset in csv file. Every row indicates one datapoint with comma-separated features. A sample train, validation, and test file for the `nltcs` dataset is included in the  `data/` directory.
 
