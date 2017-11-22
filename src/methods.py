@@ -7,10 +7,10 @@ from utils import *
 from scipy.misc import logsumexp
 
 def predict(test, 
-			ensemble, 
-			alphas, 
-			log_likelihood_evaluator, 
-			genbgm=None):
+	ensemble, 
+	alphas, 
+	log_likelihood_evaluator, 
+	genbgm=None):
 	"""
 	Generative classification for predicting one variable given the rest.
 	"""
