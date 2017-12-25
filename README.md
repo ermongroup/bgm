@@ -15,7 +15,7 @@ If you find boosted generative models useful in your research, please consider c
 >@inproceedings{grover2018boosted,  
   title={Boosted Generative Models.},  
   author={Grover, Aditya and Ermon, Stefano},  
-  booktitle={AAAI},  
+  booktitle={AAAI Conference on Artificial Intelligence},  
   year={2018}}
 
 

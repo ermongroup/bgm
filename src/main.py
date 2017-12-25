@@ -36,7 +36,7 @@ def parse_args():
 						Length of list denotes number of boosting rounds')
 
 	# generative boosting options
-	parser.add_argument('--run-genbgm', default = False, action='store_true',
+	parser.add_argument('--run-genbgm', default=False, action='store_true',
 						help='Runs multiplicative generative boosting if True')
 	parser.add_argument('--genbgm-alpha', nargs='*', type=float, default=[0.5, 0.5],
 						help='Model weights for multiplicative generative boosting. \
@@ -45,7 +45,7 @@ def parse_args():
 						help='Reweighting exponents for multiplicative generative boosting')
 
 	# discriminative boosting options
-	parser.add_argument('--run-discbgm', default = False, action='store_true',
+	parser.add_argument('--run-discbgm', default=False, action='store_true',
 						help='Runs multiplicative discriminative boosting if True')	
 	parser.add_argument('--discbgm-alpha', nargs='*', type=float, default=[1., 1.],
 						help='Model weights for multiplicative discriminative boosting. \
