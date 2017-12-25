@@ -4,19 +4,10 @@ Boosted Generative Models
 This repository provides a reference implementation for boosted generative models as described in the paper:
 
 
-> Boosted Generative Models.  
-Aditya Grover and Stefano Ermon.   
+> Boosted Generative Models  
+[Aditya Grover](aditya-grover.github.io) and [Stefano Ermon](https://cs.stanford.edu/~ermon/).   
 AAAI Conference on Artificial Intelligence (AAAI), 2018.  
 https://arxiv.org/pdf/1702.08484.pdf
-
-If you find boosted generative models useful in your research, please consider citing the following paper:
-
-
->@inproceedings{grover2018boosted,  
-  title={Boosted Generative Models.},  
-  author={Grover, Aditya and Ermon, Stefano},  
-  booktitle={AAAI Conference on Artificial Intelligence},  
-  year={2018}}
 
 
 ### Requirements
@@ -82,3 +73,15 @@ You can also run any combination of the meta-algorithms together as shown below.
 ```
 python src/main.py --dataset nltcs --run-genbgm --genbgm-alpha 0.5 0.5 --genbgm-beta 0.25 0.125 --run-discbgm --discbgm-alpha 1. 1. --run-addbgm --addbgm-alpha 0.5 0.25 --run-classifier
 ```
+
+
+### Citing
+
+If you find boosted generative models useful in your research, please consider citing the following paper:
+
+
+>@inproceedings{grover2018boosted,  
+  title={Boosted Generative Models},  
+  author={Grover, Aditya and Ermon, Stefano},  
+  booktitle={AAAI Conference on Artificial Intelligence},  
+  year={2018}}
