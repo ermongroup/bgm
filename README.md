@@ -5,7 +5,7 @@ This repository provides a reference implementation for boosted generative model
 
 
 > Boosted Generative Models  
-[Aditya Grover](aditya-grover.github.io) and [Stefano Ermon](https://cs.stanford.edu/~ermon/).   
+[Aditya Grover](https://aditya-grover.github.io) and [Stefano Ermon](https://cs.stanford.edu/~ermon/).   
 AAAI Conference on Artificial Intelligence (AAAI), 2018.  
 https://arxiv.org/pdf/1702.08484.pdf
 
